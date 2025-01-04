@@ -545,6 +545,24 @@ async function returnReponse(question) {
   return msg;
 }
 
+router.get("/initiate-call", async (req, res) => {
+  try {
+    const client = twilio(process.env.ACCOUNTSID, process.env.AUTHTOKEN);
+
+    const call = await client.calls.create({
+      to: req.body.toPhone, //"+19782481662"
+      from: process.env.TWILIOPHONEFROM, // The Twilio number you're calling from
+      url: `${process.env.BACKURI}/api/ivr/ring`, // A "ringing" message to play while the call is being connected
+      method: "POST",
+    });
+
+    res.status(200).json({ success: true, callSid: call.sid });
+  } catch (err) {
+    console.error("Error initiating call:", err.message);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 router.post("/ring", async (req, res) => {
   const callStatus = req.body.CallStatus;
 
