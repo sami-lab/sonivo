@@ -547,14 +547,11 @@ async function returnReponse(question) {
 
 router.get("/initiate-call", async (req, res) => {
   try {
-    const client = twilio(
-      "AC8f8d8160cff27026fcf115390af19f07",
-      "30c2849dc0706d046f2de83fb10f73d9"
-    );
+    const client = twilio(process.env.ACCOUNTSID, process.env.AUTHTOKEN);
 
     const call = await client.calls.create({
       to: "+19782481662",
-      from: "+19786361859", // The Twilio number you're calling from
+      from: process.env.TWILIOPHONEFROM, // The Twilio number you're calling from
       url: `${process.env.BACKURI}/api/ivr/ring`, // A "ringing" message to play while the call is being connected
       method: "POST",
     });
